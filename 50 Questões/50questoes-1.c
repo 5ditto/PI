@@ -103,13 +103,13 @@ char *mystrcat(char s1[], char s2[]){
 }
 
 //Exercício 8 MAL
-char *mystrcpy(char *dest, char source[]){
-	int i, l = strlen(source);
-	for(i = 0; source[i]!='\0';i++){
-		dest = source[i];
-		dest++;
-	}
-	return *dest;
+char *mystrcpy(char s1[], const char s2[]) {
+    int i;
+    for(i = 0; s2[i] != '\0'; i++){
+        s1[i] = s2[i];
+    }
+    s1[i] = '\0';
+    return s1;
 }
 
 //Exercício 9
@@ -367,7 +367,7 @@ int contaVogais (char s[]) {
 }
 
 //Exercício 22
-int pertence(char s[],char c){
+int pertence1(char s[],char c){
     int i;
     for(i = 0; s[i] != '\0'; i++){
         if(c == s[i])
@@ -379,7 +379,7 @@ int pertence(char s[],char c){
 int contida (char a[], char b[]) {
     int i;
     for(i = 0; a[i] != '\0'; i++){
-        if(pertence(b, a[i]) == 0)
+        if( pertence1(b, a[i]) == 0)
             return 0;
     } 
     return 1;
@@ -513,3 +513,334 @@ int menosFreq (int v[], int N){
 }
 
 //Exercício 31
+int maisFreq (int v[], int N){
+    int i, conta = 0, maior = 0, mfreq = v[0];
+    for(i = 0; i < N; i++){
+        if( v[i] == v[i+1])
+            conta++;
+        else{
+            if(conta > maior){
+                maior = conta;
+                mfreq = v[i];
+            }
+            conta = 0;
+        }
+    }
+    return mfreq;
+}
+
+
+
+//Exercício 32
+int maxCresc (int v[], int N) {
+    int i, j, maior = 0, conta = 1;
+    for(i = 0; i < N; i++){
+        if(v[i] <= v[i+1]){
+            conta++;
+        }
+        else{
+            if(conta > maior){
+                maior =  conta;
+            }
+            conta = 1;
+        }
+    }
+    return maior;
+}
+
+//Exercício 33
+int pertence2(int v[], int i){
+    int j;
+    for(j = 0; j < i; j++){
+        if(v[j] == v[i]){
+            return 1;
+        }
+    }
+    return 0;
+}
+int elimRep (int v[], int N) {
+    int i, j = 0;
+    for(i = 0; i < N; i++){
+        if(pertence2(v, i) == 0){
+             v[j] = v[i];
+             j++;
+        }
+    }
+    return j;
+}
+
+//Exercício 34
+int elimRepOrd (int v[], int N) {
+    int i, j = 0;
+    for(i = 0; i < N; i++){
+        if(i == N-1){
+            v[j]=v[i];
+            j++;
+        }
+        if(v[i] < v[i+1]){
+            v[j] = v[i]; 
+            j++;
+        }
+    }
+    return j;
+}
+
+//Exercício 35
+int comunsOrd (int a[], int na, int b[], int nb){
+    int i= 0, j=0,conta = 0;
+    while (i < na && j < nb){
+        if(a[i] == b[j]){
+            conta++;
+            i++;
+            j++;
+        }
+        else{
+            if(a[i] < b[j])
+                i++;
+            else{
+                j++;
+            }
+        }
+    }
+    
+    return conta;
+}
+
+//Exercício 36
+
+int comuns (int a[], int na, int b[], int nb){
+    int i, j, conta = 0, t = 0;
+    for(i = 0; i < na; i++){
+        for(j = 0; j < nb && t != 1 ; j++){
+            if(a[i] == b[j]){
+                conta++;
+                t = 1;
+            }
+        }
+        t = 0;
+    }
+    return conta;
+}
+
+
+//Exercício 37
+int minInd (int v[], int n) {
+   int i, menor = v[0], ind;
+   for(i = 0; i < n; i++){
+        if(v[i] < menor){
+            menor = v[i];
+            ind = i; 
+       }
+   }
+   return ind;
+}
+
+//Exercício 38
+void somasAc (int v[], int Ac [], int N){
+   int i;
+   Ac[0] = v[0];
+   for(i = 1; i< N; i++){
+       Ac[i] = Ac[i-1] + v[i];  
+   }
+   
+}
+
+//Exercício 39
+int triSup (int N, int m [N][N]) {
+    int i, j;
+    for(i = 0; i< N; i++){
+        for(j = 0; j < i; j++){
+            if(m[i][j] != 0)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+//Exercício 40
+void transposta (int N, float m [N][N]) {
+    int i, j, aux;
+    for (i = 0; i<N; i++){
+        for(j = 0; j < i; j++){
+            aux = m[i][j];
+            m[i][j] = m[j][i];
+            m[j][i] = aux;
+        }
+    }
+
+}
+
+
+//Exercício 41
+void addTo(int N, int M, int a [N][M], int b[N][M]) {
+    int i,j;
+    for(i = 0; i < N; i++){
+        for(j = 0; j < M; j++){
+            a[i][j] += b[i][j];
+        }
+    }
+}
+
+//Exercício 42
+int unionSet (int N, int v1[N], int v2[N], int r[N]){
+    int i ;
+    for(i = 0; i < N; i++){
+        if(v1[i] || v2[i]){
+            r[i] = 1;
+        }
+        else{
+            r[i] = 0;
+        }
+    }
+}
+
+
+//Exercício 43
+   int intersectSet (int N, int v1[N], int v2[N], int r[N]){
+       int c;
+       for(c = 0; c < N; c++){
+           if(v1[c] && v2[c])
+                r[c] = 1;
+            else
+                r[c] = 0;
+       }
+   }
+
+//Exercício 44
+int intersectMSet (int N, int v1[N], int v2[N], int r[N]){
+    int c;
+    for(c = 0; c < N; c++){
+        if(v1[c] <= v2[c])
+             r[c] = v1[c];
+         else
+             r[c] = v2[c];
+    }
+}
+
+//Eexrcício 45
+int unionMSet (int N, int v1[N], int v2[N], int r[N]){
+    int c;
+    for(c = 0; c < N; c++){
+        if(v1[c] >= v2[c])
+            r[c] = v1[c];
+        else
+            r[c] = v2[c];
+    }
+}
+
+//Exercício 46
+int cardinalMSet (int N, int v[N]){
+	int c, conta = 0;
+        for( c = 0; c < N; c++){
+	    conta += v[c];
+	}
+    return conta;
+}
+
+
+typedef enum movimento {
+    Norte, 
+    Oeste, 
+    Sul, 
+    Este
+} Movimento;
+
+
+typedef struct posicao {
+    int x, y;
+} Posicao;
+
+//Exercício 47
+Posicao posFinal (Posicao inicial, Movimento mov[], int N){
+    // dada uma posição inicial e um array mov com N movimentos, 
+    // calcula a posição final do robot depois de efectuar essa sequencia de movimentos
+    int i;
+    for(i = 0; i < N; i++){
+        switch(mov[i]){
+            case Norte:
+                inicial.y++;
+                break;
+            case Sul:
+                inicial.y--;
+                break;
+            case Este:
+                inicial.x++;
+                break;
+            case Oeste:
+                inicial.x--;
+                break;
+            default: break;
+        }
+    }
+    return inicial;
+}
+
+//Exercício 48
+int caminho(Posicao inicial, Posicao final, Movimento mov[], int N){
+    int i;
+    for(i = 0; i < N; i++){
+        if(inicial.x > final.x){
+            mov[i] = Oeste;
+            inicial.x--;
+        }
+        else{
+            if(inicial.x < final.x){
+                mov[i] = Este;
+                inicial.x++;    
+            }
+            else{
+                if(inicial.y > final.y){
+                    mov[i] = Sul;
+                    inicial.y--;
+                }
+                else{ 
+                    if(inicial.y < final.y){
+                        mov[i] = Norte;
+                        inicial.y++; 
+                    }
+                    else
+                        break;
+                }
+            }
+        }
+    }
+    if(inicial.x != final.x || inicial.y != final.y)
+        return -1;
+    return i;
+}
+
+//Exercício 49
+int maiscentral (Posicao pos[], int N) {
+    int dist = 0 , menor, menorind = 0,i;
+    menor = ((pos[0].x) * (pos[0].x)) + ((pos[0].y)*(pos[0].y));
+    for(i = 1; i < N; i++){
+        dist = ((pos[i].x)*( pos[i].x)) + ((pos[i].y) *(pos[i].y));
+        if(dist < menor){
+            menor = dist;
+            menorind = i;
+        }
+        dist = 0;
+    }
+    return menorind;
+}
+
+
+//Exercício 50
+int vizinhos (Posicao p, Posicao pos[], int N) {
+    int i, viz = 0;
+    for(i = 0; i < N; i++){
+        if(pos[i].x == p.x && pos[i].y == (p.y + 1))
+            viz++;
+        else{
+            if(pos[i].x == p.x && pos[i].y == (p.y - 1))
+                viz++;
+            else{
+                if(pos[i].y == p.y && pos[i].x == (p.x + 1))
+                    viz++;
+                else if(pos[i].y == p.y && pos[i].x == (p.x - 1))
+                    viz++;
+            }
+        }
+    }
+    return viz;
+}

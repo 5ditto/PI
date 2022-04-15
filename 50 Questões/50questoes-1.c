@@ -102,7 +102,8 @@ char *mystrcat(char s1[], char s2[]){
 	return s1;
 }
 
-//Exercício 8 MAL
+
+//Exercício 8 
 char *mystrcpy(char s1[], const char s2[]) {
     int i;
     for(i = 0; s2[i] != '\0'; i++){

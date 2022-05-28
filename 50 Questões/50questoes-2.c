@@ -1,64 +1,76 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct lligada {
     int valor;
     struct lligada *prox;
 } *LInt;
 
+LInt newLInt (int v, LInt t){
+    LInt new = (LInt) malloc (sizeof (struct lligada));
+    
+    if (new!=NULL) {
+        new->valor = v;
+        new->prox  = t;
+    }
+    return new;
+}
+
 //1
-int length (LInt l){
-    int comp;
-    if(l == NULL) return 0;
-    if(l->prox == NULL) return 1;
-    for(comp=1; l->prox != NULL; comp++)
-        l =  l->prox;
-    return comp;
+int length(LInt l){
+    int count = 0;
+    while(l){
+        count++;
+        l = l->prox;
+    }
+    return count;
 }
 
 //2
 void freeL(LInt l){
-    LInt  l2;
-    if(l == NULL)
+    LInt aux;
+    if(!l)
         return;
-    while (l->prox)
-    {
-        l2 = l;
+    
+    while (l->prox){
+        aux = l;
         l = l->prox;
-        free(l2);
-    }
+        free(aux);        
+    }    
 }
 
 //3
 void imprimeL(LInt l){
-    if(l == NULL)
-        return;
-    while(l->prox){
-        printf("%d\n",l->valor);
-        l->prox;
+    while(l){
+        printf("%d\n", l->valor);
+        l = l->prox;
     }
 }
 
 //4
-LInt reverse(LInt l){
-    if(!l) return NULL;
-    LInt ant = NULL;
-    while (l){
-        LInt x = l->prox;
+LInt reverseL(LInt l){
+    if(!l)
+        return NULL;
+    LInt ant = NULL, next;
+    while(l){
+        next = l->prox;
         l->prox = ant;
         ant = l;
-        l = x;
+        l = next;
     }
-    return ant;   
+    
+    return ant;
 }
 
 //5
-void insertOrd (LInt *l, int x){
-    LInt novo = newLInt(x, NULL);
-    
-    while((*l)!= NULL && (*l)->valor <= x){
-        l = &((*l)->prox);
+void insertOrd(LInt *l, int x){
+    LInt xl = newLInt(x, NULL);
+    LInt aux = *l;
+
+    while(aux && aux->valor <= x){
+        aux = aux->prox;
     }
-    novo->prox = *l;
-    *l = novo;   
+    xl->prox = *l;
+    *l = xl;
+
 }

@@ -72,11 +72,7 @@ Palavras acrescentaFim(Palavras l, char *p){
 //7
 Palavras acrescenta(Palavras l, char *p){
     if(l == NULL){
-        Palavras novo = malloc(sizeof(Palavras));
-        novo->palavra = p;
-        novo->ocorr = 1;
-        novo->prox = NULL;
-        return novo;
+        acrescentaInicio(l, p);
     }
     Palavras aux = l;
     while(!aux && !strcmp(aux->palavra,p)){

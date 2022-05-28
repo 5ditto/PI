@@ -124,31 +124,56 @@ int  Sfront (SQueue q, int *x) {
 // Queues with dynamic arrays
 
 int dupQueue (DQueue q) {
-	// ...
+
 	return (-1);
 }
 
 void DinitQueue (DQueue q) {
-	// ...
+	q->front    = -1;
+    q->size     = 1;
+    q->length   = 0;
+    q->values   = malloc(sizeof(int));
 }
 
-int  DisEmptyQ (DQueue s) {
-	return (-1);
+int  DisEmptyQ (DQueue q) {
+	return(q->length == 0);
 }
 
 int  Denqueue (DQueue q, int x){
-	// ...
-	return (-1);
+	if(q->length == q->size){
+        q->size *= 2;
+        q->values = realloc(q->values, q->size);
+
+        if(q->values == NULL)
+            return -1;
+    }
+	if(q->front == -1)
+        q->front = 0;
+    
+    q->values[q->length] = x;
+    q->length++;
+
+    return 0;
 }
 
 int  Ddequeue (DQueue q, int *x){
-	// ...
-	return (-1);
+	if(DisEmptyQ(q))
+        return -1;
+    *x = q->values[(q->front)];
+    q->length--;
+    q->front++;
+
+    if(DisEmptyQ(q))
+        q->front = -1;
+
+	return 0;
 }
 
 int  Dfront (DQueue q, int *x){
-	// ...
-	return (-1);
+	if(q->length == 0)
+        return -1;
+    *x = q->values[(q->front)];
+	return 0;
 }
 
 

@@ -540,26 +540,472 @@ ABin newABin (int r, ABin e, ABin d){
 	return new;
 }
 
+
 //28
 int altura(ABin a){
-    int count;
+    int alt;
     if(a == NULL)
         return 0;
-    if(altura (a->esq) > altura(a->dir))
-        count = 1 + altura(a->esq);
-
+    
+    int direita = altura(a->dir);
+    int esquerda = altura(a->esq);
+    if(direita > esquerda)
+        alt = 1+ direita;
     else 
-        count = 1 + altura(a->dir);
-    return count;
+        alt = 1 + esquerda;
+    
+    return alt;
 }
 
-// 29
+//29
 ABin cloneAB(ABin a){
-    ABin novo;
-    if(a == NULL)
-        novo = NULL;
-    else
-        novo = newABin(a->valor, cloneAB(a->esq),cloneAB(a->dir));
+    ABin c;
+    if(!a)
+        return NULL;
+    c = newABin(a->valor,cloneAB(a->esq), cloneAB(a->dir));
+    return c;
+}
 
-    return novo;
+// codeBoard é gay por isso
+ABin cloneAB2(ABin a){
+    
+    if(!a)
+        return NULL;
+    //c = newABin(a->valor,cloneAB(a->esq), cloneAB(a->dir));
+    ABin c = malloc(sizeof(struct nodo));
+    c->valor = a->valor;
+    c->esq = cloneAB2(a->esq);
+    c->dir = cloneAB2(a->dir);
+    return c;
+}
+
+//30
+void mirror(ABin *a){
+    
+    if(!(*a))
+        return;
+    ABin aux = (*a)->esq;
+        (*a)->esq = (*a)->dir;
+        (*a)->dir = aux;
+    mirror(&((*a)->esq));
+    mirror(&((*a)->dir));
+
+}
+
+//31
+void insere(int a, LInt *l){
+    LInt atual = *l;
+    LInt nodo = newLInt(a, NULL);
+    
+    if(!*l){
+        *l = nodo;
+        return;
+    }
+    while(atual->prox){
+        atual = atual->prox;
+    }
+    atual->prox = nodo;
+    nodo->prox = NULL;
+    
+}
+
+void inorder(ABin a, LInt *l){
+    if(!a)
+        return;
+    inorder(a->esq, l);
+    insere(a->valor, l);
+    inorder(a->dir, l);
+   
+}
+
+//32
+void preorderaux(ABin a,LInt *l){
+    if(!a)
+        return;
+    LInt atual = *l;
+    while(atual->prox){
+        atual = atual->prox;
+    }
+    atual->prox = newLInt(a->valor, NULL);
+    preorderaux(a->esq, l);
+    preorderaux(a->dir, l);
+}
+
+
+void preorder(ABin a, LInt *l){
+    *l = newLInt(0, NULL);
+    preorderaux(a, l);
+    *l = (*l)->prox;
+    
+}
+
+//33
+void posteraux(ABin a,LInt *l){
+    if(!a)
+        return;
+    LInt atual = *l;
+    posteraux(a->esq, l);
+    posteraux(a->dir, l);
+    while(atual->prox){
+        atual = atual->prox;
+    }
+    atual->prox = newLInt(a->valor, NULL);
+    
+}
+
+void posorder(ABin a, LInt *l){
+    *l = newLInt(0, NULL);
+    posteraux(a, l);
+    *l = (*l)->prox;
+    
+}  
+
+//34
+int depth(ABin a, int x){
+    if(!a)
+        return -1;
+    
+    if(a->valor == x)
+        return 1;
+    
+    if(depth(a->esq, x) == -1 && depth(a->dir,x) == -1)
+        return -1;
+    
+    if(depth(a->esq,x) == -1)
+        return (depth(a->dir,x) + 1);
+    
+    if(depth(a->dir,x) == -1)
+        return (depth(a->esq,x) + 1);
+
+    if(depth(a->esq,x) < depth(a->dir,x))
+        return (depth(a->esq,x) + 1);
+    else    
+        return(depth(a->dir,x) + 1); 
+}
+
+//35
+int freeAB(ABin a){
+    
+    if(!a)
+        return 0;
+    int conta = 1 + freeAB(a->esq) + freeAB(a->dir);
+    free(a);
+    return conta;    
+}
+
+//36
+int pruneAB(ABin *a, int l){
+    if(*a == NULL)
+        return 0;
+    if(l > 0){
+        return (pruneAB(&((*a)->esq),l-1) + pruneAB(&((*a)->dir),l-1));
+        
+    }
+    else{
+       int res = 1 + pruneAB(&((*a)->esq), 0) + pruneAB(&((*a)->dir), 0);
+        free(*a);
+        *a=NULL;
+        return res;
+    }
+}
+
+//37
+int iguaisAB(ABin a, ABin b){
+    if(!a && !b)
+        return 1;
+    if(a == NULL)
+        return 0;
+    if(b == NULL)
+        return 0;
+    if(a->valor != b->valor)
+        return 0;
+    
+    int igualdireita = iguaisAB(a->dir,b->dir);
+    int igualesquerda = iguaisAB(a->esq,b->esq);
+
+    return igualdireita*igualesquerda;
+}
+
+//38
+void insere2(LInt *l, ABin a, int n){
+    if(!a)
+        return;
+    if(n == 1){
+        LInt atual = *l;
+        while(atual->prox){
+            atual = atual->prox;
+        }
+        LInt nodo = newLInt(a->valor, NULL);
+        atual->prox = nodo;
+        nodo->prox = NULL;
+    
+    }
+    else{
+        insere2(l, a->esq, n-1);
+        insere2(l, a->dir, n-1);
+    }
+}
+
+LInt nivelL(ABin a, int n){
+    LInt l = newLInt(0,NULL);
+
+    insere2(&l, a, n);
+
+    l = l->prox;
+    return l;
+    
+}
+
+//39
+int insereA(ABin a, int v[], int n,int i){
+    if(a == NULL)
+        return i;
+    if(n == 1){
+        v[i] = a->valor;
+        i++;
+    }
+    else{
+        i = insereA(a->esq,v,n-1,i);
+        i = insereA(a->dir,v,n-1,i);
+    }
+    return i;
+}
+
+int nivelV(ABin a, int n, int v[]){
+    return insereA(a,v,n,0);
+}
+
+//40
+int acrescenta(ABin a, int v[], int *N, int *i){
+    if(a == NULL)
+        return 0;
+    int x = 0;
+    x += acrescenta(a->esq,v,N,i);
+    if(*N > 0){
+        v[*i] = a->valor;
+        (*i)++;
+        (*N)--;
+        x++;
+    }
+    x += acrescenta(a->dir,v,N,i);
+    return x;
+}
+int dumpAbin(ABin a, int v[], int N){
+    int x, i = 0;
+    x = acrescenta(a,v,&N,&i);
+    return x;
+}
+
+//41
+ABin somasAcA(ABin a){
+    int acesq, acdir;
+    if(a == NULL)
+        return NULL;
+    
+    ABin nodo = malloc(sizeof(struct nodo));
+    ABin newl = somasAcA(a->esq);
+    ABin newr = somasAca(a->dir);
+    nodo->esq = newl;
+    nodo->dir = newr;
+
+    if(newl == NULL){
+        acesq = 0;
+    }
+    else{
+        acesq = newl->valor;
+    }
+
+    if(newr == NULL){
+        acdir = 0;
+    }
+    else{
+        acdir = newr->valor;
+    }
+
+    nodo->valor = acdir + acesq + a->valor;
+
+    return nodo;
+}
+
+//42
+int contaFolhas(ABin a){
+    if(a == NULL)
+        return 0;
+    if(a->esq == NULL && a->dir == NULL)
+        return 1;
+    int conta = contaFolhas(a->esq) + contaFolhas(a->dir);
+    return conta;
+}
+
+//43
+ABin cloneMirror(ABin a){
+    if(a == NULL)
+        return NULL;
+    ABin c = malloc(sizeof(struct nodo));
+    c->valor = a->valor;
+    c->esq = cloneMirror(a->dir);
+    c->dir = cloneMirror(a->esq);
+    return c;
+}
+
+//44
+int addOrd (ABin *a, int x) {
+    ABin nodox = malloc(sizeof(struct nodo));
+    nodox->valor = x;
+    nodox->esq = NULL;
+    nodox->dir = NULL;
+
+
+    if(*a == NULL){
+        (*a) = nodox;
+        return 0;
+    }
+    ABin atual = *a, ant;
+
+    while(atual){
+        if(x == atual->valor)
+            return 1;
+        
+        ant = atual;
+
+        if(x<atual->valor)
+            atual = atual->esq;
+        else    
+            atual = atual->dir;
+    }
+
+    if(x < ant->valor){
+        ant->esq = nodox;
+    }
+    else
+        ant->dir = nodox;
+
+    return 0;
+}
+
+//45
+int lookupAB(ABin a, int x){
+    if(a == NULL){
+        return 0;
+    }
+    while(a){
+        if(x == a->valor)
+            return 1;
+        if( x < a->valor)
+            a = a->esq;
+        else
+            a = a->dir;
+    }
+    return 0;
+}
+
+//46
+int depthOrd(ABin a, int x){
+    if(a == NULL){
+        return -1;
+    }
+    int nivel = 1; 
+    while(a){
+        if(x == a->valor)
+            return nivel;
+        if( x < a->valor){
+            a = a->esq;
+            nivel++;
+        }
+        else{
+            a = a->dir;
+            nivel++;
+        }
+    }
+    return -1;
+}
+
+//47
+int maiorAB(ABin a){
+    if(a == NULL)
+        return 0;
+        
+    while(a->dir){
+        a = a->dir;
+    }
+    return a->valor;
+}
+
+//48
+void removeMaiorA(ABin *a){
+    if(a == NULL)
+        return;
+    if((*a)->dir == NULL){
+        *a = (*a)->esq;
+        return;
+    }
+    ABin ant, atual = *a;
+    while(atual->dir){
+        ant = atual;
+        atual = atual->dir;
+    }
+    ant->dir = atual->esq;
+    
+}
+
+//49
+int quantosMaiores(ABin a, int x){
+    if(a == NULL)
+        return 0;
+    int qmaiores = 0;
+    if(a->valor > x)
+        qmaiores = 1 + quantosMaiores(a->dir, x) + quantosMaiores(a->esq,x);
+    else
+        qmaiores = quantosMaiores(a->esq,x) + quantosMaiores(a->dir, x);
+
+
+    return qmaiores;    
+}
+
+//50
+int tamanho(LInt l){
+    
+    int t = 0;
+    while(l){
+        l  =l->prox;
+        t++;
+    }
+    return t;
+}
+
+
+LInt partir(LInt l, int *x){
+    
+    if(l == NULL) return NULL;
+    
+    int meio = tamanho(l)/2;
+    LInt current = l, prev, l2;
+    
+    while(meio>0){
+        prev = current;
+        current = current->prox;
+        meio--;
+    }
+    
+    *x = current->valor;
+    l2 = current->prox;
+    prev->prox = NULL;
+    
+    return l2;
+}
+void listToBTree(LInt l, ABin *a){
+    if(l == NULL)
+        return;
+    if(l->prox == NULL){
+        ABin nodo = newABin2(l->valor,NULL, NULL);
+        return;
+    }
+    LInt l1 = l, l2;
+    int t;
+    l2 = partir(l1,&t);
+    int t = tamanho(l);
+    t /= 2;
+    ABin nodo = newABin2(t,NULL, NULL);
+    listToBTree(l1, &((*a)->esq));
+    listToBTree(l2, &((*a)->dir));
 }

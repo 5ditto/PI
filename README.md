@@ -1,10 +1,10 @@
-# RC Projects (21/22)
+# PI
 
-Trabalhos Práticos 21/22 Redes de Computadores
+- Resoluções de fichas (2021/2022)
+- Resoluções de teste e exames 
+- Resolução das 100 Questões
 
 ---
 
-# Trabalho realizado por:
-- Beatriz Monteiro ([5ditto](https://github.com/5ditto))
-- Pedro Sousa ([pedrops164](https://github.com/pedrops164))
-- Telmo Maciel ([telmomaciel9](https://github.com/telmomaciel9))
+#  Beatriz Monteiro ([5ditto](https://github.com/5ditto))
+

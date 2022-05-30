@@ -963,49 +963,74 @@ int quantosMaiores(ABin a, int x){
 }
 
 //50
-int tamanho(LInt l){
-    
-    int t = 0;
-    while(l){
-        l  =l->prox;
-        t++;
-    }
-    return t;
+int length (LInt l) {
+	int x = 0;
+	while (l != NULL) {
+		l = l->prox;
+		x++;
+	}
+	return x;
 }
 
-
-LInt partir(LInt l, int *x){
-    
-    if(l == NULL) return NULL;
-    
-    int meio = tamanho(l)/2;
-    LInt current = l, prev, l2;
-    
-    while(meio>0){
-        prev = current;
-        current = current->prox;
-        meio--;
-    }
-    
-    *x = current->valor;
-    l2 = current->prox;
-    prev->prox = NULL;
-    
-    return l2;
+LInt parteAMeio (LInt *l){
+	LInt atual = *l, ant = newLInt (0, atual);
+	*l = ant;
+	int x = length (atual) / 2;
+	while (x > 1) {
+		atual = atual->prox;
+		ant = ant->prox;
+		x--;
+	}
+	ant->prox = NULL;
+	ant = *l;
+	*l = ant->prox;
+	free (ant);
+	return atual;
 }
-void listToBTree(LInt l, ABin *a){
-    if(l == NULL)
-        return;
-    if(l->prox == NULL){
-        ABin nodo = newABin2(l->valor,NULL, NULL);
-        return;
+
+void listToBTree (LInt l, ABin *a) {
+	if (l == NULL) {
+		*a = NULL;
+		return;
+	}
+	LInt dir = parteAMeio (&l);
+	*a = newABin (dir->valor, NULL, NULL);
+	listToBTree (l, &(*a)->esq);
+	listToBTree (dir->prox, &(*a)->dir);
+	return;
+}
+//51 
+int max(ABin a){
+    if(a == NULL)
+        return 0;
+    
+    while(a->dir){
+        a = a->dir;
     }
-    LInt l1 = l, l2;
-    int t;
-    l2 = partir(l1,&t);
-    int t = tamanho(l);
-    t /= 2;
-    ABin nodo = newABin2(t,NULL, NULL);
-    listToBTree(l1, &((*a)->esq));
-    listToBTree(l2, &((*a)->dir));
+    
+    return(a->valor);
+}
+
+int min(ABin a){
+    if(a == NULL){
+        return 0;
+    }
+    while(a->esq){
+        a = a->esq;
+    }
+    return(a->valor);
+}
+ 
+int deProcura(ABin a){
+    if(a == NULL)
+        return 1;
+    
+    if(a->dir != NULL && min(a->dir) < a->valor)
+        return 0;
+    else if(a->esq != NULL && max(a->esq) > a->valor)
+        return 0;
+    else if(deProcura(a->dir) == 0 || deProcura(a->esq) == 0)
+        return 0;
+    return 1; 
+    
 }
